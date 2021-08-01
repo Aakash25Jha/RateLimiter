@@ -28,7 +28,7 @@ public class MainController {
 	
 	public MainController(Calculator calculator) {
 		this.calculator=calculator;
-		Bandwidth limit = Bandwidth.classic(5, Refill.greedy(5, Duration.ofMinutes(1)));
+		Bandwidth limit = Bandwidth.classic(100, Refill.greedy(100, Duration.ofHours(1)));
 	    this.bucket = Bucket4j.builder()
 	        .addLimit(limit)
 	        .build();
@@ -36,7 +36,7 @@ public class MainController {
 	}
 
 	    @GetMapping("/calculate/{operationType}/{arg1}/{arg2}")
-	    public ResponseEntity<String> calculate(@PathVariable String apiKey,@PathVariable OperationType operationType,@PathVariable Double arg1,@PathVariable Double arg2) {
+	    public ResponseEntity<String> calculate(@PathVariable OperationType operationType,@PathVariable Double arg1,@PathVariable Double arg2) {
 	    	if (bucket.tryConsume(1)) {
 	    		 return ResponseEntity.ok(resultString + calculator.calculate(operationType, arg1, arg2));
 	    }
